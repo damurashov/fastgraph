@@ -154,6 +154,10 @@ class Canvas(tkinter.Canvas):
         return self.get_objects_at(x, y, area_size_pixels, area_size_pixels)
 
     def add_node_at(self, x, y):
+        """
+        Creates a new node at provided coordinates. Returns the created node's id
+        """
+
         # Center created node on cursor position
         starting_coordinate = [x - int(self._node_properties.size_pixels / 2),
             y - int(self._node_properties.size_pixels / 2)]
