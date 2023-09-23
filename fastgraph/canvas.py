@@ -122,7 +122,16 @@ class Canvas(tkinter.Canvas):
         return overlapping_objects
 
     def add_node_at(self, x, y):
-        node_bounding_rectangle = ((x, y),
+        starting_coordinate = [x - int(self._node_properties.size_pixels / 2),
+            y - int(self._node_properties.size_pixels / 2)]
+
+        if starting_coordinate[0] < 0:
+            starting_coordinate[0] = 0
+
+        if starting_coordinate[1] < 0:
+            starting_coordinate[1] = 0
+
+        node_bounding_rectangle = (tuple(starting_coordinate),
             (x + self._node_properties.size_pixels, y + self._node_properties.size_pixels))
         node = self.create_oval(node_bounding_rectangle, fill=self._node_properties.color)
 
