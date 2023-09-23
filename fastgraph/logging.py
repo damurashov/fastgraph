@@ -20,3 +20,7 @@ def error(context, message):
 
 def info(context, message):
     _log_impl(context, message, "I")
+
+
+def warning(context, message):
+    _log_impl(context, message, "W")
