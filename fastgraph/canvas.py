@@ -51,6 +51,10 @@ class Canvas(tkinter.Canvas):
         node = self.create_oval(node_bounding_rectangle, fill=self._node_properties.color)
 
     def on_left_button_clicked_canvas(self, event):
+        """
+        Gets invoked each time user clicks on a canvas. Depending on the current
+        `self._mode`, the appropriate handler is invoked.
+        """
         fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"got event {event}")
 
         if self._mode == _CanvasMode.DRAWING:
