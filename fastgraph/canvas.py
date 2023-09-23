@@ -68,6 +68,9 @@ class Canvas(tkinter.Canvas):
         return self.find_closest(x, y)
 
     def select_node(self, node_id):
+        """
+        Redraws a specified node as selected
+        """
         self.itemconfig(node_id, outline=self._node_properties.outline_selected_color,
             width=self._node_properties.outline_selected_thickness)
         fastgraph.logging.info(Canvas._LOG_CONTEXT,
