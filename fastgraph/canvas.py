@@ -25,6 +25,7 @@ class _CanvasMode:
 
 class _CanvasNodeProperties:
     size_pixels = 20
+
     color = _Tkinter.COLOR_BLACK
     """ Fill color """
 
@@ -40,6 +41,9 @@ class _CanvasProperties:
     If allowed, clicking on a node will create a new one. Warning: with this
     option set to True, the behavior is undefined.
     """
+
+    collision_area_scale_factor = 1.3
+    """ The higher this value is, the wider the area around an existing node when no new nodes can be created"""
 
 
 class Canvas(tkinter.Canvas):
@@ -121,6 +125,21 @@ class Canvas(tkinter.Canvas):
 
         return overlapping_objects
 
+    def get_colliding_objects_at(self, x, y):
+        area_size_pixels = int(self._node_properties.size_pixels * self._properies.collision_area_scale_factor)
+
+        # Get some space around the coordinates
+        x = x - int(area_size_pixels / 2)
+        y = y - int(area_size_pixels / 2)
+
+        if x < 0:
+            x = 0
+
+        if y < 0:
+            y = 0
+
+        return self.get_objects_at(x, y, area_size_pixels, area_size_pixels)
+
     def add_node_at(self, x, y):
         # Center created node on cursor position
         starting_coordinate = [x - int(self._node_properties.size_pixels / 2),
@@ -155,7 +174,7 @@ class Canvas(tkinter.Canvas):
         fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"Got event {event}")
 
         if self._mode == _CanvasMode.DRAWING:
-            overlapping_objects = self.get_objects_at(event.x, event.y)
+            overlapping_objects = self.get_colliding_objects_at(event.x, event.y)
             fastgraph.logging.debug(Canvas._LOG_CONTEXT,
                 f"overlapping ojects at {(event.x, event.y)}: {overlapping_objects}")
 
