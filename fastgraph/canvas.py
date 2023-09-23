@@ -35,6 +35,12 @@ class _CanvasNodeProperties:
     outline_thickness_selected = 6
 
 
+class _CanvasEdgeProperties:
+    fill_color_default = _Tkinter.COLOR_BLACK
+    fill_color_selected = _Tkinter.COLOR_RED
+    line_thickness = 6
+
+
 class _CanvasProperties:
     allow_overlapping_node_creation = False
     """
@@ -61,6 +67,9 @@ class Canvas(tkinter.Canvas):
 
         # Create default _CanvasNodeProperties
         self._properies = _CanvasProperties()
+
+        # Create default edge properties
+        self._edge_properties = _CanvasEdgeProperties()
 
         # Bind left mouse click
         self.bind(_Tkinter.MOUSE_BUTTON_LEFT, self.on_left_button_clicked_canvas)
@@ -116,7 +125,7 @@ class Canvas(tkinter.Canvas):
         fastgraph.logging.info(Canvas._LOG_CONTEXT, "Unselected all nodes")
 
     def on_node_left_button_clicked(self, event, node_id):
-        fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"on_node_clicked: {event} node id={node_id}")
+        fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"on_node_left_button_clicked: {event} node id={node_id}")
 
         if self._mode == _CanvasMode.DRAWING:
             # Draw the node as selected
@@ -187,8 +196,38 @@ class Canvas(tkinter.Canvas):
 
         return node_id
 
+    def get_object_center_coordinates(self, object_id):
+        coordinates = self.coords(object_id)
+        x = int((coordinates[2] + coordinates[0]) / 2)
+        y = int((coordinates[3] + coordinates[1]) / 2)
+
+        return x, y
+
+    def apply_edge_style_default(self, edge_id):
+        self.itemconfig(edge_id, width=self._edge_properties.line_thickness,
+            fill=self._edge_properties.fill_color_default)
+
+    def apply_edge_style_selected(self, edge_id):
+        pass  # TODO
+
+    def on_edge_left_button_clicked(self, event, edge_id):
+        pass  #TODO
+
     def add_edge(self, node_a_id, node_b_id):
-        pass
+        # Create and render the edge
+        start_coordinates = self.get_object_center_coordinates(node_a_id)
+        end_coordinates = self.get_object_center_coordinates(node_b_id)
+        edge_id = self.create_line(start_coordinates, end_coordinates, width=self._edge_properties.line_thickness,
+            fill=self._edge_properties.fill_color_default)
+        self.apply_edge_style_default(edge_id)
+
+        # Add hooks on user actions with the edge
+        on_edge_left_button_clicked_context_capture = lambda event: self.on_edge_left_button_clicked(event, edge_id)  # A context-capturing lambda
+        self.tag_bind(edge_id, _Tkinter.MOUSE_BUTTON_LEFT, on_edge_left_button_clicked_context_capture)
+        fastgraph.logging.info(Canvas._LOG_CONTEXT,
+            f"Added edge {edge_id} between nodes {(node_a_id, node_b_id)} start {start_coordinates} end {end_coordinates}")
+
+        return edge_id
 
     def on_left_button_clicked_canvas(self, event):
         """
