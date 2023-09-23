@@ -171,7 +171,7 @@ class Canvas(tkinter.Canvas):
         Gets invoked each time user clicks on a canvas. Depending on the current
         `self._mode`, the appropriate handler is invoked.
         """
-        fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"Got event {event}")
+        fastgraph.logging.info(Canvas._LOG_CONTEXT, f"Left button click at {(event.x, event.y)}")
 
         if self._mode == _CanvasMode.DRAWING:
             overlapping_objects = self.get_colliding_objects_at(event.x, event.y)
