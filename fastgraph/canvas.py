@@ -27,11 +27,15 @@ class _CanvasNodeProperties:
     size_pixels = 20
     color = _Tkinter.COLOR_BLACK
     outline_selected_color = _Tkinter.COLOR_RED
-    outline_selected_thicknesss = 2
+    outline_selected_thickness = 6
 
 
 class _CanvasProperties:
     allow_overlapping_node_creation = False
+    """
+    If allowed, clicking on a node will create a new one. Warning: with this
+    option set to True, the behavior is undefined.
+    """
 
 
 class Canvas(tkinter.Canvas):
@@ -57,21 +61,42 @@ class Canvas(tkinter.Canvas):
         """
         self._mode = _CanvasMode.DRAWING
 
-    def on_node_clicked(self, event):
-        fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"on_node_clicked: {event}")
+    def get_closest_object_identifiers_at(self, x, y):
+        """
+        See `find_closest` in Tkiter documentation. Used in event processing.
+        """
+        return self.find_closest(x, y)
+
+    def on_node_left_button_clicked(self, event, node_id):
+        fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"on_node_clicked: {event} node id={node_id}")
+
+        # Draw the node as selected
+        self.itemconfig(node_id, outline=self._node_properties.outline_selected_color,
+            width=self._node_properties.outline_selected_thickness)
 
     def get_objects_at(self, x, y, width=1, height=1):
         """
-        Returns overlapping objects at a given coordinate
+        Returns overlapping objects at a given coordinate. Used for collision
+        detection.
         """
         overlapping_objects = self.find_overlapping(x, y, x + width, y + height)
 
         return overlapping_objects
 
     def add_node_at(self, x, y):
-        node_bounding_rectangle = ((x, y), (x + self._node_properties.size_pixels, y + self._node_properties.size_pixels))
+        node_bounding_rectangle = ((x, y),
+            (x + self._node_properties.size_pixels, y + self._node_properties.size_pixels))
         node = self.create_oval(node_bounding_rectangle, fill=self._node_properties.color)
-        self.tag_bind(node, _Tkinter.MOUSE_BUTTON_LEFT, self.on_node_clicked)
+
+        # Capture the context in a function, so we won't have to search for the node ID using geometrical match
+        def __on_node_left_button_clicked_context(event):
+            """
+            Side effect: if the click "goes through", stacked nodes will
+            probably be selected.
+            """
+            self.on_node_left_button_clicked(event, node)
+
+        self.tag_bind(node, _Tkinter.MOUSE_BUTTON_LEFT, __on_node_left_button_clicked_context)
         fastgraph.logging.info(Canvas._LOG_CONTEXT, f"add_node_at: new node at ({x}, {y}) id={node}")
 
     def on_left_button_clicked_canvas(self, event):
@@ -83,11 +108,14 @@ class Canvas(tkinter.Canvas):
 
         if self._mode == _CanvasMode.DRAWING:
             overlapping_objects = self.get_objects_at(event.x, event.y)
+            fastgraph.logging.debug(Canvas._LOG_CONTEXT,
+                f"overlapping ojects at {(event.x, event.y)}: {overlapping_objects}")
 
             if len(overlapping_objects) == 0 or self._properies.allow_overlapping_node_creation:
                 self.add_node_at(event.x, event.y)
             else:
-                fastgraph.logging.info(Canvas._LOG_CONTEXT, f"Found collision at {(event.x, event.y)}. Creating collided nodes is not allowed. Skipping")
+                fastgraph.logging.info(Canvas._LOG_CONTEXT,
+                    f"Found collision at {(event.x, event.y)}. Creating collided nodes is not allowed. Skipping")
 
 
 class InteractiveTest(unittest.TestCase):
