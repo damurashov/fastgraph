@@ -26,7 +26,7 @@ class _CanvasMode:
 class _CanvasNodeProperties:
     size_pixels = 20
 
-    color = _Tkinter.COLOR_BLACK
+    fill_color = _Tkinter.COLOR_BLACK
     """ Fill color """
 
     outline_color_default = None
@@ -82,11 +82,11 @@ class Canvas(tkinter.Canvas):
 
     def apply_node_style_selected(self, node_id):
         self.itemconfig(node_id, outline=self._node_properties.outline_color_selected,
-            width=self._node_properties.outline_thickness_selected)
+            width=self._node_properties.outline_thickness_selected, fill=self._node_properties.fill_color)
 
     def apply_node_style_default(self, node_id):
         self.itemconfig(node_id, outline=self._node_properties.outline_color_default,
-            width=self._node_properties.outline_thickness_default)
+            width=self._node_properties.outline_thickness_default, fill=self._node_properties.fill_color)
 
     def is_node_selected(self, node_id):
         return node_id in self._selected_node_identifiers
@@ -171,7 +171,8 @@ class Canvas(tkinter.Canvas):
 
         node_bounding_rectangle = (tuple(starting_coordinate),
             (x + self._node_properties.size_pixels, y + self._node_properties.size_pixels))
-        node_id = self.create_oval(node_bounding_rectangle, fill=self._node_properties.color)
+        node_id = self.create_oval(node_bounding_rectangle, fill=self._node_properties.fill_color)
+        self.apply_node_style_default(node_id)
 
         # Capture the context in a function, so we won't have to search for the node ID using geometrical match
         def __on_node_left_button_clicked_context(event):
