@@ -12,7 +12,7 @@ setup(
     author="Dmitry Murashov",
     setup_requires=["wheel"],
     install_requires=[
-    	"tired @ git+https://github.com/damurashov/tired.git@master#egg=tired",
+        "tired @ git+https://github.com/damurashov/tired.git@master",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
