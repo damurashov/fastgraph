@@ -74,15 +74,14 @@ class Canvas(tkinter.Canvas):
         self.itemconfig(node_id, outline=self._node_properties.outline_selected_color,
             width=self._node_properties.outline_selected_thickness)
         fastgraph.logging.info(Canvas._LOG_CONTEXT,
-            f"on_node_clicked: selected node id={node_id}")
+            f"selected node id={node_id} at {self.coords(node_id)}")
 
     def on_node_left_button_clicked(self, event, node_id):
         fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"on_node_clicked: {event} node id={node_id}")
 
-        # Draw the node as selected
-        self.select_node(node_id)
-        fastgraph.logging.info(Canvas._LOG_CONTEXT,
-            f"on_node_clicked: selected node id={node_id} at {event.x, event.y}")
+        if self._mode == _CanvasMode.DRAWING:
+            # Draw the node as selected
+            self.select_node(node_id)
 
     def get_objects_at(self, x, y, width=1, height=1):
         """
