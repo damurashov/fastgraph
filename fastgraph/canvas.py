@@ -221,6 +221,9 @@ class Canvas(tkinter.Canvas):
             fill=self._edge_properties.fill_color_default)
         self.apply_edge_style_default(edge_id)
 
+        # Move the edge at the bottom of the stack, so each new node will be drawn upon it
+        self.lower(edge_id)
+
         # Add hooks on user actions with the edge
         on_edge_left_button_clicked_context_capture = lambda event: self.on_edge_left_button_clicked(event, edge_id)  # A context-capturing lambda
         self.tag_bind(edge_id, _Tkinter.MOUSE_BUTTON_LEFT, on_edge_left_button_clicked_context_capture)
