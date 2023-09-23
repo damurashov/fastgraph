@@ -14,9 +14,6 @@ setup(
     install_requires=[
     	"tired @ git+https://github.com/damurashov/tired.git@master#egg=tired",
     ],
-    dependency_links=[
-    	"",
-    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
