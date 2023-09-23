@@ -45,6 +45,8 @@ class _CanvasProperties:
     collision_area_scale_factor = 1.3
     """ The higher this value is, the wider the area around an existing node when no new nodes can be created"""
 
+    auto_create_edge_between_2_selected_nodes = True
+
 
 class Canvas(tkinter.Canvas):
     _LOG_CONTEXT = f"fastgraph.{_LOG_CONTEXT}.Canvas"
@@ -106,6 +108,12 @@ class Canvas(tkinter.Canvas):
         self._selected_node_identifiers.append(node_id)
         self.apply_node_style_selected(node_id)
 
+    def unselect_all_nodes(self):
+        while len(self._selected_node_identifiers) > 0:
+            self.unselect_node(self._selected_node_identifiers[0])
+
+        fastgraph.logging.info(Canvas._LOG_CONTEXT, "Unselected all nodes")
+
     def on_node_left_button_clicked(self, event, node_id):
         fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"on_node_clicked: {event} node id={node_id}")
 
@@ -115,6 +123,11 @@ class Canvas(tkinter.Canvas):
                 self.unselect_node(node_id)
             else:
                 self.select_node(node_id)
+
+            # 2 nodes have been selected in drawing mode. Create an edge between them
+            if len(self._selected_node_identifiers) == 2 and self._properies.auto_create_edge_between_2_selected_nodes:
+                self.add_edge(self._selected_node_identifiers[0], self._selected_node_identifiers[1])
+                self.unselect_all_nodes()
 
     def get_objects_at(self, x, y, width=1, height=1):
         """
@@ -165,6 +178,9 @@ class Canvas(tkinter.Canvas):
 
         self.tag_bind(node, _Tkinter.MOUSE_BUTTON_LEFT, __on_node_left_button_clicked_context)
         fastgraph.logging.info(Canvas._LOG_CONTEXT, f"add_node_at: new node at ({x}, {y}) id={node}")
+
+    def add_edge(self, node_a_id, node_b_id):
+        pass
 
     def on_left_button_clicked_canvas(self, event):
         """
