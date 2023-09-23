@@ -49,11 +49,14 @@ class Canvas(tkinter.Canvas):
         # Set default node properties
         self._node_properties = _CanvasNodeProperties()
 
+        # Create default _CanvasNodeProperties
+        self._properies = _CanvasProperties()
+
         # Bind left mouse click
         self.bind(_Tkinter.MOUSE_BUTTON_LEFT, self.on_left_button_clicked_canvas)
 
-        # Create default _CanvasNodeProperties
-        self._properies = _CanvasProperties()
+        # List of selected nodes. The order matters: it represents a sequence in which those have been selected
+        self._selected_node_identifiers = list()
 
     def set_drawing_mode(self):
         """
@@ -67,14 +70,28 @@ class Canvas(tkinter.Canvas):
         """
         return self.find_closest(x, y)
 
+    def apply_node_style_selected(self, node_id):
+        self.itemconfig(node_id, outline=self._node_properties.outline_selected_color,
+            width=self._node_properties.outline_selected_thickness)
+
+    def apply_node_style_default(self, node_id):
+        self.itemconfig(node_id, outline=None, width=None)
+
+    def is_node_selected(self, node_id):
+        return node_id in self._selected_node_identifiers
+
+    def unselect_node(self, node_id):
+        self._selected_node_identifiers = list(filter(lambda i: i != node_id, self._selected_node_identifiers))
+        self.apply_node_style_default(node_id)
+
     def select_node(self, node_id):
         """
         Redraws a specified node as selected
         """
-        self.itemconfig(node_id, outline=self._node_properties.outline_selected_color,
-            width=self._node_properties.outline_selected_thickness)
         fastgraph.logging.info(Canvas._LOG_CONTEXT,
-            f"selected node id={node_id} at {self.coords(node_id)}")
+            f"Selected node id={node_id} at {self.coords(node_id)}")
+        self._selected_node_identifiers.append(node_id)
+        self.apply_node_style_selected(node_id)
 
     def on_node_left_button_clicked(self, event, node_id):
         fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"on_node_clicked: {event} node id={node_id}")
@@ -113,7 +130,7 @@ class Canvas(tkinter.Canvas):
         Gets invoked each time user clicks on a canvas. Depending on the current
         `self._mode`, the appropriate handler is invoked.
         """
-        fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"got event {event}")
+        fastgraph.logging.debug(Canvas._LOG_CONTEXT, f"Got event {event}")
 
         if self._mode == _CanvasMode.DRAWING:
             overlapping_objects = self.get_objects_at(event.x, event.y)
