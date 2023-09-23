@@ -20,6 +20,6 @@ setup(
         "Operating System :: OS Inependent",
     ],
     python_requires=">=3.7",
-    version="0.0.3",
+    version="0.1.0",
 )
 
