@@ -85,7 +85,8 @@ class Canvas(tkinter.Canvas):
             width=self._node_properties.outline_thickness_selected)
 
     def apply_node_style_default(self, node_id):
-        self.itemconfig(node_id, outline=self._node_properties.outline_color_default, width=self._node_properties.outline_thickness_default)
+        self.itemconfig(node_id, outline=self._node_properties.outline_color_default,
+            width=self._node_properties.outline_thickness_default)
 
     def is_node_selected(self, node_id):
         return node_id in self._selected_node_identifiers
