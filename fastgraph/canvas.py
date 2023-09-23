@@ -75,12 +75,17 @@ class Canvas(tkinter.Canvas):
             width=self._node_properties.outline_selected_thickness)
 
     def apply_node_style_default(self, node_id):
-        self.itemconfig(node_id, outline=None, width=None)
+        self.itemconfig(node_id, outline=None, width=0)
 
     def is_node_selected(self, node_id):
         return node_id in self._selected_node_identifiers
 
     def unselect_node(self, node_id):
+        """
+        Redraws a specified node, removes it from the list of selected nodes
+        """
+        fastgraph.logging.info(Canvas._LOG_CONTEXT,
+            f"Unselected node id={node_id} at {self.coords(node_id)}")
         self._selected_node_identifiers = list(filter(lambda i: i != node_id, self._selected_node_identifiers))
         self.apply_node_style_default(node_id)
 
@@ -98,7 +103,10 @@ class Canvas(tkinter.Canvas):
 
         if self._mode == _CanvasMode.DRAWING:
             # Draw the node as selected
-            self.select_node(node_id)
+            if self.is_node_selected(node_id):
+                self.unselect_node(node_id)
+            else:
+                self.select_node(node_id)
 
     def get_objects_at(self, x, y, width=1, height=1):
         """
