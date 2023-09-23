@@ -26,6 +26,10 @@ class _CanvasMode:
 class _CanvasNodeProperties:
     size_pixels = 20
     color = _Tkinter.COLOR_BLACK
+    """ Fill color """
+
+    outline_color = None
+    outline_width = 0
     outline_selected_color = _Tkinter.COLOR_RED
     outline_selected_thickness = 6
 
@@ -75,7 +79,7 @@ class Canvas(tkinter.Canvas):
             width=self._node_properties.outline_selected_thickness)
 
     def apply_node_style_default(self, node_id):
-        self.itemconfig(node_id, outline=None, width=0)
+        self.itemconfig(node_id, outline=self._node_properties.outline_color, width=self._node_properties.outline_width)
 
     def is_node_selected(self, node_id):
         return node_id in self._selected_node_identifiers
