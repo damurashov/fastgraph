@@ -166,7 +166,7 @@ class Canvas(tkinter.Canvas):
 
         node_bounding_rectangle = (tuple(starting_coordinate),
             (x + self._node_properties.size_pixels, y + self._node_properties.size_pixels))
-        node = self.create_oval(node_bounding_rectangle, fill=self._node_properties.color)
+        node_id = self.create_oval(node_bounding_rectangle, fill=self._node_properties.color)
 
         # Capture the context in a function, so we won't have to search for the node ID using geometrical match
         def __on_node_left_button_clicked_context(event):
@@ -174,10 +174,12 @@ class Canvas(tkinter.Canvas):
             Side effect: if the click "goes through", stacked nodes will
             probably be selected.
             """
-            self.on_node_left_button_clicked(event, node)
+            self.on_node_left_button_clicked(event, node_id)
 
-        self.tag_bind(node, _Tkinter.MOUSE_BUTTON_LEFT, __on_node_left_button_clicked_context)
-        fastgraph.logging.info(Canvas._LOG_CONTEXT, f"add_node_at: new node at ({x}, {y}) id={node}")
+        self.tag_bind(node_id, _Tkinter.MOUSE_BUTTON_LEFT, __on_node_left_button_clicked_context)
+        fastgraph.logging.info(Canvas._LOG_CONTEXT, f"add_node_at: new node at ({x}, {y}) id={node_id}")
+
+        return node_id
 
     def add_edge(self, node_a_id, node_b_id):
         pass
