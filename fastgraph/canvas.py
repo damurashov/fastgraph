@@ -46,16 +46,6 @@ class Canvas(tkinter.Canvas):
         """
         self._mode = _CanvasMode.DRAWING
 
-    def update_render(self):
-        parent = self.winfo_parent()
-
-        if parent is None:
-            fastgraph.logging.error(Canvas._LOG_CONTEXT, f"update_render: cannot have `None` parent, raising exception")
-
-            raise ValueError
-
-        parent.update()
-
     def add_node_at(self, x, y):
         node_bounding_rectangle = ((x, y), (x + self._node_properties.size_pixels, y + self._node_properties.size_pixels))
         node = self.create_oval(node_bounding_rectangle, fill=self._node_properties.color)
