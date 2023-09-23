@@ -53,6 +53,9 @@ class _CanvasProperties:
 
     auto_create_edge_between_2_selected_nodes = True
 
+    allow_multigraph = False
+    """ Allow multiple edges between the same nodes TODO """
+
 
 class Canvas(tkinter.Canvas):
     _LOG_CONTEXT = f"fastgraph.{_LOG_CONTEXT}.Canvas"
@@ -215,6 +218,7 @@ class Canvas(tkinter.Canvas):
 
     def add_edge(self, node_a_id, node_b_id):
         # Create and render the edge
+        # TODO: prevent from creating existing nodes (see `allow_multigraph`)
         start_coordinates = self.get_object_center_coordinates(node_a_id)
         end_coordinates = self.get_object_center_coordinates(node_b_id)
         edge_id = self.create_line(start_coordinates, end_coordinates, width=self._edge_properties.line_thickness,
