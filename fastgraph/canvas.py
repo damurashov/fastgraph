@@ -122,6 +122,7 @@ class Canvas(tkinter.Canvas):
         return overlapping_objects
 
     def add_node_at(self, x, y):
+        # Center created node on cursor position
         starting_coordinate = [x - int(self._node_properties.size_pixels / 2),
             y - int(self._node_properties.size_pixels / 2)]
 
