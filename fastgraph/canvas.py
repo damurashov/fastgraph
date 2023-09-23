@@ -29,10 +29,10 @@ class _CanvasNodeProperties:
     color = _Tkinter.COLOR_BLACK
     """ Fill color """
 
-    outline_color = None
-    outline_width = 0
-    outline_selected_color = _Tkinter.COLOR_RED
-    outline_selected_thickness = 6
+    outline_color_default = None
+    outline_thickness_default = 0
+    outline_color_selected = _Tkinter.COLOR_RED
+    outline_thickness_selected = 6
 
 
 class _CanvasProperties:
@@ -79,11 +79,11 @@ class Canvas(tkinter.Canvas):
         return self.find_closest(x, y)
 
     def apply_node_style_selected(self, node_id):
-        self.itemconfig(node_id, outline=self._node_properties.outline_selected_color,
-            width=self._node_properties.outline_selected_thickness)
+        self.itemconfig(node_id, outline=self._node_properties.outline_color_selected,
+            width=self._node_properties.outline_thickness_selected)
 
     def apply_node_style_default(self, node_id):
-        self.itemconfig(node_id, outline=self._node_properties.outline_color, width=self._node_properties.outline_width)
+        self.itemconfig(node_id, outline=self._node_properties.outline_color_default, width=self._node_properties.outline_thickness_default)
 
     def is_node_selected(self, node_id):
         return node_id in self._selected_node_identifiers
