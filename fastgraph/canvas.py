@@ -118,6 +118,9 @@ class Canvas(tkinter.Canvas):
             fastgraph.logging.debug(Canvas._LOG_CONTEXT,
                 f"overlapping ojects at {(event.x, event.y)}: {overlapping_objects}")
 
+            if len(overlapping_objects) != 0:
+                fastgraph.logging.warning(Canvas._LOG_CONTEXT, f"Got overlapping objects at {(event.x, event.y)}")
+
             if len(overlapping_objects) == 0 or self._properies.allow_overlapping_node_creation:
                 self.add_node_at(event.x, event.y)
             else:
