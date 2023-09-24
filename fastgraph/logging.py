@@ -17,7 +17,7 @@ LOG_LEVEL_TO_STRING_MAPPING = {
 
 def _log_impl(context, message, level):
     print(LOG_LEVEL_TO_STRING_MAPPING[level], _LOG_SECTION_DELIMETER,
-        f"{tired.datetime.get_today_time_seconds_string()}", f"[{context}]", _LOG_SECTION_DELIMETER, message)
+        f"{tired.datetime.get_today_time_milliseconds_string()}", f"[{context}]", _LOG_SECTION_DELIMETER, message)
 
 
 def debug(context, message):
