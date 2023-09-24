@@ -75,7 +75,7 @@ class Canvas(tkinter.Canvas):
         self._edge_properties = _CanvasEdgeProperties()
 
         # Bind left mouse click
-        self.bind(_Tkinter.MOUSE_BUTTON_LEFT, self.on_left_button_clicked_canvas)
+        self.bind(_Tkinter.MOUSE_BUTTON_LEFT, self.on_canvas_left_button_clicked)
 
         # List of selected nodes. The order matters: it represents a sequence in which those have been selected
         self._selected_node_identifiers = list()
@@ -236,7 +236,7 @@ class Canvas(tkinter.Canvas):
 
         return edge_id
 
-    def on_left_button_clicked_canvas(self, event):
+    def on_canvas_left_button_clicked(self, event):
         """
         Gets invoked each time user clicks on a canvas. Depending on the current
         `self._mode`, the appropriate handler is invoked.
