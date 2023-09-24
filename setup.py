@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="fastgrpah",
+    name="fastgraph",
     packages=[
         "fastgraph",
     ],
