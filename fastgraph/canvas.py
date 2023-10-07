@@ -80,6 +80,9 @@ class Canvas(tkinter.Canvas):
         # List of selected nodes. The order matters: it represents a sequence in which those have been selected
         self._selected_node_identifiers = list()
 
+        # List of selected edges
+        self._selected_edge_identfiers = list()
+
     def set_drawing_mode(self):
         """
         The canvas gets switched into drawing mode: a user may draw nodes
@@ -211,10 +214,14 @@ class Canvas(tkinter.Canvas):
             fill=self._edge_properties.fill_color_default)
 
     def apply_edge_style_selected(self, edge_id):
-        pass  # TODO
+        self.itemconfig(edge_id, width=self._edge_properties.line_thickness,
+            fill=self._edge_properties.fill_color_selected)
 
     def on_edge_left_button_clicked(self, event, edge_id):
         pass  #TODO
+
+    def is_edge_selected(self, edge_id):
+        pass  # TODO
 
     def add_edge(self, node_a_id, node_b_id):
         # Create and render the edge
